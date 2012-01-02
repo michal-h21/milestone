@@ -1,0 +1,50 @@
+\documentclass{article}
+%\usepackage[english]{babel}
+\usepackage{ifpdf}
+\usepackage[utf8]{luainputenc}
+\newif\ifpokus
+\ifpdf
+\pokustrue
+\else
+\pokusfalse
+\fi
+%
+\ifpokus
+\usepackage[a4paper]{geometry}
+\usepackage{fontspec}
+\usepackage[]{milestone}
+\else
+
+\usepackage[a5paper]{geometry}
+\usepackage[xhtml,fn-in]{tex4ht}
+\usepackage[insert]{milestone}
+\fi
+
+\usepackage{lipsum,blindtext}
+
+\begin{document}
+%\chapter{First}
+
+
+\section{Section}
+Příliš žluťoučký \textit{kůň} úpěl ďábelské ódy. 
+\lipsum[2-12]
+\begin{itemize}
+\item první
+\item druhej
+\end{itemize}
+\subsection{Subsection}
+\lipsum[2]
+
+Odstavec s poznámkou pod čarou.\footnote{nazdar}
+
+Odstavec s několika\footnote{světe} poznámkami\footnote{jak se máš?}. 
+\lipsum[4-8]
+\begin{description}
+\item[titulek] položka
+\item[další] taky položka
+\end{description}
+%\chapter{Next chapter}
+\lipsum[3-20]
+%\blinddocument
+\end{document}

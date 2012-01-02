@@ -1,0 +1,50 @@
+\ProvidesPackage{milestone}
+\RequirePackage{luacode,luatexbase,etoolbox,kvoptions}
+\DeclareBoolOption{insert}
+\ProcessKeyvalOptions*
+
+\def\milestoneoff{\luatexattribute224=33\relax}
+\def\milestoneon{\luatexattribute224=22\relax}
+\begin{luacode}
+milestone=require("milestone")
+\end{luacode}
+\ifmilestone@insert
+\begin{luacode}
+luatexbase.add_to_callback("pre_linebreak_filter",milestone.insertPageBreaks,"Insert")
+\end{luacode}
+\else
+\AfterEndDocument{%
+\directlua{milestone.writeMilestones()}
+}
+
+\newtoks\oldoutput
+\oldoutput=\expandafter{\the\output}
+\output{
+    \directlua{
+    milestone.pagenumber = "\thepage"
+    milestone.getPageBreaks(tex.box[255].list)
+    }
+    \the\oldoutput
+}
+\fi
+
+%Hooks for commands 
+\let\old@footnote\footnote
+\renewcommand\footnote[1]{%
+\milestoneoff%
+\old@footnote{#1}%
+\milestoneon%
+}
+%Hacks for tex4ht
+ 
+\@ifpackageloaded{tex4ht}{
+\let\old@seccntformat\@seccntformat
+%\old@seccntformat{section}
+\renewcommand\@seccntformat[1]{%
+\milestoneoff%
+\old@seccntformat{#1}%
+\milestoneon%
+}
+
+}{}
+
