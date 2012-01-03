@@ -1,22 +1,39 @@
 \ProvidesPackage{milestone}
 \RequirePackage{luacode,luatexbase,etoolbox,kvoptions}
+% we have only one package option, insert, when set, milestone marks are 
+% included into the document. document must be at first processed without this 
+% option in order to create the milestone file   
 \DeclareBoolOption{insert}
+\DeclareStringOption[//\%s]{format}
 \ProcessKeyvalOptions*
 
+% milestoneoff/milestoneon are switches, milestoneoff excludes 
+% followning characters from the checksum calculation  
 \def\milestoneoff{\luatexattribute224=33\relax}
 \def\milestoneon{\luatexattribute224=22\relax}
+%
+%\edef\pageformat{//[page:\%s]}
 \begin{luacode}
 milestone=require("milestone")
 \end{luacode}
+
+\def\milestone@savepageformat#1{%
+\directlua{milestone.pageformat="#1"}
+}
+\milestone@savepageformat\milestone@format
+
 \ifmilestone@insert
 \begin{luacode}
 luatexbase.add_to_callback("pre_linebreak_filter",milestone.insertPageBreaks,"Insert")
 \end{luacode}
+%
 \else
+%
 \AfterEndDocument{%
 \directlua{milestone.writeMilestones()}
 }
-
+%
+% We need to hack the output routine in order to get the page numbers
 \newtoks\oldoutput
 \oldoutput=\expandafter{\the\output}
 \output{

@@ -5,6 +5,7 @@ milestonefile = tex.jobname..".mil"   -- File, where all milestones are saved
 pagenumber=""                         -- Pagenumbers must be saved in TeX, 
                                       -- in the output routine
 hyphenchar=45
+pageformat="//[%s]"
 local glyph = node.id('glyph')
 local milchecksum=0
 local glyphpos=0
@@ -25,7 +26,7 @@ end
 -- Item in the current list, where the page break mark should be inserted
 function printPageBreak(item,page)
   local hi = node.new("glue")
-  local mynode=mknodes(hi,"//["..page.."]")
+  local mynode=mknodes(hi,unicode.utf8.format(pageformat,page))
   local pp=item.next
   item.next=hi
   node.tail(hi).next=pp
